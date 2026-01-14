@@ -18,18 +18,38 @@ namespace Script
         // Reference to the Behavior Graph agent
         public BehaviorGraphAgent agent;
         
-        // Канал події "Ранок" (необов'язково, створюється автоматично якщо не призначено)
-        // "Morning" event channel (optional, created automatically if not assigned)
+        // Канали подій для різних частин доби (необов'язково, створюються автоматично якщо не призначені)
+        // Event channels for different times of day (optional, created automatically if not assigned)
+        [Header("Event Channels (optional)")]
         [Tooltip("Optional: Assign Morning EventChannel asset here. If not assigned, it will be created at runtime.")]
         public Morning morningEventChannel;
-
-        // Прапорець чи було вже відправлено ранкову подію
-        // Flag indicating if the morning event has been sent
-        private bool _morningSent;
         
-        // Внутрішнє посилання на канал події Morning
-        // Internal reference to the Morning event channel
+        [Tooltip("Optional: Assign Afternoon EventChannel asset here. If not assigned, it will be created at runtime.")]
+        public Afternoon afternoonEventChannel;
+        
+        [Tooltip("Optional: Assign Evening EventChannel asset here. If not assigned, it will be created at runtime.")]
+        public Evening eveningEventChannel;
+        
+        [Tooltip("Optional: Assign Night EventChannel asset here. If not assigned, it will be created at runtime.")]
+        public Night nightEventChannel;
+
+        // Прапорці для відстеження чи були відправлені події для кожної частини доби
+        // Flags to track if events have been sent for each time of day
+        private bool _morningSent;
+        private bool _afternoonSent;
+        private bool _eveningSent;
+        private bool _nightSent;
+        
+        // Внутрішні посилання на канали подій
+        // Internal references to event channels
         private Morning _runtimeMorningEvent;
+        private Afternoon _runtimeAfternoonEvent;
+        private Evening _runtimeEveningEvent;
+        private Night _runtimeNightEvent;
+        
+        // Попередня година для відстеження змін
+        // Previous hour to track changes
+        private int _previousHour = -1;
 
         /// <summary>
         /// Викликається при ініціалізації об'єкта
@@ -47,17 +67,31 @@ namespace Script
                 Debug.LogWarning("TimeController: BehaviorGraphAgent is not assigned! Please assign it in the Inspector.");
             }
 
-            // Якщо канал події Morning не призначений, створюємо його під час виконання
-            // If morningEventChannel is not assigned, create a runtime instance
-            if (morningEventChannel == null)
+            // Ініціалізація EventChannel для всіх частин доби
+            // Initialize EventChannels for all times of day
+            InitializeEventChannel(morningEventChannel, ref _runtimeMorningEvent, "Morning");
+            InitializeEventChannel(afternoonEventChannel, ref _runtimeAfternoonEvent, "Afternoon");
+            InitializeEventChannel(eveningEventChannel, ref _runtimeEveningEvent, "Evening");
+            InitializeEventChannel(nightEventChannel, ref _runtimeNightEvent, "Night");
+            
+            _previousHour = hour;
+        }
+
+        /// <summary>
+        /// Ініціалізує EventChannel (створює runtime instance якщо не призначений)
+        /// Initializes an EventChannel (creates runtime instance if not assigned)
+        /// </summary>
+        private void InitializeEventChannel<T>(T assignedChannel, ref T runtimeChannel, string eventName) where T : ScriptableObject
+        {
+            if (assignedChannel == null)
             {
-                Debug.LogWarning("TimeController: Morning EventChannel not assigned. Creating runtime instance.");
-                _runtimeMorningEvent = ScriptableObject.CreateInstance<Morning>();
+                Debug.LogWarning($"TimeController: {eventName} EventChannel not assigned. Creating runtime instance.");
+                runtimeChannel = ScriptableObject.CreateInstance<T>();
             }
             else
             {
-                _runtimeMorningEvent = morningEventChannel;
-                Debug.Log("TimeController: Using assigned Morning EventChannel.");
+                runtimeChannel = assignedChannel;
+                Debug.Log($"TimeController: Using assigned {eventName} EventChannel.");
             }
         }
 
@@ -72,59 +106,115 @@ namespace Script
             if (Keyboard.current != null && Keyboard.current.mKey.wasPressedThisFrame)
             {
                 Debug.Log("M key pressed!");
-                // Встановлюємо годину на 1 (ранок)
-                // Set hour to 1 (morning)
+                // Встановлюємо годину на 1 (для тестування)
+                // Set hour to 1 (for testing)
                 hour = 1;
                 Debug.Log($"Hour set to: {hour}");
             }
 
-            // Якщо настала 1-а година або пізніше, і ще не відправляли ранкову подію
-            // If it's 1 o'clock or later, and morning event hasn't been sent yet
-            if (hour >= 1 && !_morningSent)
+            // Перевіряємо чи змінилася година
+            // Check if the hour has changed
+            if (hour != _previousHour)
+            {
+                Debug.Log($"Hour changed from {_previousHour} to {hour}");
+                _previousHour = hour;
+                
+                // Скидаємо прапорці для нової години
+                // Reset flags for the new hour
+                ResetEventFlags();
+            }
+
+            // Перевірка та виклик подій залежно від години
+            // Check and trigger events based on the hour
+            
+            // Ранок (Morning) - 5:00
+            if (hour >= 5 && hour < 13 && !_morningSent)
             {
                 _morningSent = true;
-                Debug.Log("Triggering Morning event");
-                
-                if (agent != null)
+                TriggerEvent(_runtimeMorningEvent, "Morning");
+            }
+            
+            // День (Afternoon) - 13:00
+            if (hour >= 13 && hour < 18 && !_afternoonSent)
+            {
+                _afternoonSent = true;
+                TriggerEvent(_runtimeAfternoonEvent, "Afternoon");
+            }
+            
+            // Вечір (Evening) - 18:00
+            if (hour >= 18 && hour < 22 && !_eveningSent)
+            {
+                _eveningSent = true;
+                TriggerEvent(_runtimeEveningEvent, "Evening");
+            }
+            
+            // Ніч (Night) - 22:00 і 00:00
+            if ((hour >= 22 || hour < 5) && !_nightSent)
+            {
+                _nightSent = true;
+                TriggerEvent(_runtimeNightEvent, "Night");
+            }
+        }
+
+        /// <summary>
+        /// Скидає всі прапорці подій (викликається при зміні години)
+        /// Resets all event flags (called when hour changes)
+        /// </summary>
+        private void ResetEventFlags()
+        {
+            _morningSent = false;
+            _afternoonSent = false;
+            _eveningSent = false;
+            _nightSent = false;
+        }
+
+        /// <summary>
+        /// Викликає подію через EventChannel
+        /// Triggers an event through an EventChannel
+        /// </summary>
+        private void TriggerEvent<T>(T eventChannel, string eventName) where T : EventChannelBase
+        {
+            Debug.Log($"Triggering {eventName} event at hour {hour}");
+            
+            if (agent != null)
+            {
+                // Намагаємося знайти та запустити змінну в blackboard агента
+                // Try to find and trigger the variable in agent's blackboard
+                var blackboard = agent.BlackboardReference;
+                if (blackboard != null)
                 {
-                    // Намагаємося знайти та запустити змінну Morning в blackboard агента
-                    // Try to find and trigger Morning event channel variable in agent's blackboard
-                    var blackboard = agent.BlackboardReference;
-                    if (blackboard != null)
+                    // Отримуємо змінну з blackboard
+                    // Get the variable from blackboard
+                    if (blackboard.GetVariable<T>(eventName, out var eventVar))
                     {
-                        // Отримуємо змінну Morning з blackboard
-                        // Get the Morning variable from blackboard
-                        if (blackboard.GetVariable<Morning>("Morning", out var morningEventVar))
-                        {
-                            // Відправляємо подію через змінну blackboard
-                            // Send the event through the blackboard variable
-                            morningEventVar.Value?.SendEventMessage();
-                            Debug.Log("Morning event triggered through blackboard successfully");
-                        }
-                        else
-                        {
-                            // Запасний варіант: намагаємося відправити глобальну подію
-                            // Fallback: try sending global event
-                            if (_runtimeMorningEvent != null)
-                            {
-                                _runtimeMorningEvent.SendEventMessage();
-                                Debug.Log("Morning event triggered globally (no blackboard variable found)");
-                            }
-                            else
-                            {
-                                Debug.LogError("Cannot trigger Morning event: no Morning variable in blackboard and no runtime event!");
-                            }
-                        }
+                        // Відправляємо подію через змінну blackboard
+                        // Send the event through the blackboard variable
+                        eventVar.Value?.SendEventMessage(System.Array.Empty<BlackboardVariable>());
+                        Debug.Log($"{eventName} event triggered through blackboard successfully");
                     }
                     else
                     {
-                        Debug.LogError("Cannot trigger Morning event: agent blackboard is null!");
+                        // Запасний варіант: намагаємося відправити глобальну подію
+                        // Fallback: try sending global event
+                        if (eventChannel != null)
+                        {
+                            eventChannel.SendEventMessage(System.Array.Empty<BlackboardVariable>());
+                            Debug.Log($"{eventName} event triggered globally (no blackboard variable found)");
+                        }
+                        else
+                        {
+                            Debug.LogError($"Cannot trigger {eventName} event: no {eventName} variable in blackboard and no runtime event!");
+                        }
                     }
                 }
                 else
                 {
-                    Debug.LogError("Cannot trigger Morning event: agent is null!");
+                    Debug.LogError($"Cannot trigger {eventName} event: agent blackboard is null!");
                 }
+            }
+            else
+            {
+                Debug.LogError($"Cannot trigger {eventName} event: agent is null!");
             }
         }
     }
