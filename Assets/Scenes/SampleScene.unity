@@ -340,7 +340,7 @@ Transform:
   m_GameObject: {fileID: 313765157}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -17.57, y: 1.98, z: -11.12}
+  m_LocalPosition: {x: -19.21, y: 1.98, z: -10.37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -363,6 +363,7 @@ MonoBehaviour:
   - rid: 2495113140265812207
   - rid: 2495113140265812208
   - rid: 2495113140265812246
+  - rid: 2495113300825079992
   m_OriginalGraph: {fileID: 2312695560635926662, guid: 2901d0fef47064942848619f1f10b0f6, type: 2}
   m_IsInitialised: 0
   m_IsStarted: 0
@@ -396,6 +397,14 @@ MonoBehaviour:
           m_Value1: 5751457070096507936
         Name: cowshed
         m_Value: {fileID: 1256122409}
+    - rid: 2495113300825079992
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 1353472512574534061
+          m_Value1: 16848198893427618052
+        Name: farmer
+        m_Value: {fileID: 789680378}
 --- !u!195 &313765163
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -432,6 +441,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Script.TimeController
   hour: 0
   agent: {fileID: 313765162}
+  hourIncrementInterval: 5
   morningEventChannel: {fileID: 0}
   afternoonEventChannel: {fileID: 0}
   eveningEventChannel: {fileID: 0}
@@ -461,7 +471,7 @@ Transform:
   m_GameObject: {fileID: 316592289}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -19.39, y: 1.16, z: -9.19}
+  m_LocalPosition: {x: -19.39, y: 0.97, z: -5.55}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -937,7 +947,7 @@ Transform:
   m_GameObject: {fileID: 789680378}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.8, y: 2, z: 8.26}
+  m_LocalPosition: {x: 16, y: 2, z: 10.61}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1066,6 +1076,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Script.TimeController
   hour: 0
   agent: {fileID: 789680385}
+  hourIncrementInterval: 5
   morningEventChannel: {fileID: 0}
   afternoonEventChannel: {fileID: 0}
   eveningEventChannel: {fileID: 0}
@@ -1095,7 +1106,7 @@ Transform:
   m_GameObject: {fileID: 801498094}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -18.89, y: 0.57, z: -1.7}
+  m_LocalPosition: {x: -18, y: 1, z: -1.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1255,7 +1266,7 @@ Transform:
   m_GameObject: {fileID: 1256122409}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -18.25, y: 1.33, z: -10.68}
+  m_LocalPosition: {x: -18.79, y: 1.26, z: -10.84}
   m_LocalScale: {x: 5.4757195, y: 0.5190891, z: 2.3082051}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1366,7 +1377,7 @@ Transform:
   m_GameObject: {fileID: 1472544711}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.63941, y: 2.14, z: 9.51}
+  m_LocalPosition: {x: 4.63941, y: 2.04, z: 9.51}
   m_LocalScale: {x: 2.3322, y: 2.0934, z: 2.301776}
   m_ConstrainProportionsScale: 0
   m_Children: []

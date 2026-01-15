@@ -18,6 +18,15 @@ namespace Script
         // Reference to the Behavior Graph agent
         public BehaviorGraphAgent agent;
         
+        // Таймер для автоматичного збільшення години
+        // Timer for automatic hour increment
+        private float _hourTimer;
+        
+        // Інтервал у секундах для збільшення години
+        // Interval in seconds to increment the hour
+        [Tooltip("Час у секундах між автоматичним збільшенням години / Time in seconds between automatic hour increments")]
+        public float hourIncrementInterval = 10f;
+        
         // Канали подій для різних частин доби (необов'язково, створюються автоматично якщо не призначені)
         // Event channels for different times of day (optional, created automatically if not assigned)
         [Header("Event Channels (optional)")]
@@ -69,10 +78,10 @@ namespace Script
 
             // Ініціалізація EventChannel для всіх частин доби
             // Initialize EventChannels for all times of day
-            InitializeEventChannel(morningEventChannel, ref _runtimeMorningEvent, "Morning");
-            InitializeEventChannel(afternoonEventChannel, ref _runtimeAfternoonEvent, "Afternoon");
-            InitializeEventChannel(eveningEventChannel, ref _runtimeEveningEvent, "Evening");
-            InitializeEventChannel(nightEventChannel, ref _runtimeNightEvent, "Night");
+            _runtimeMorningEvent = InitializeEventChannel(morningEventChannel, "Morning");
+            _runtimeAfternoonEvent = InitializeEventChannel(afternoonEventChannel, "Afternoon");
+            _runtimeEveningEvent = InitializeEventChannel(eveningEventChannel, "Evening");
+            _runtimeNightEvent = InitializeEventChannel(nightEventChannel, "Night");
             
             _previousHour = hour;
         }
@@ -81,17 +90,17 @@ namespace Script
         /// Ініціалізує EventChannel (створює runtime instance якщо не призначений)
         /// Initializes an EventChannel (creates runtime instance if not assigned)
         /// </summary>
-        private void InitializeEventChannel<T>(T assignedChannel, ref T runtimeChannel, string eventName) where T : ScriptableObject
+        private T InitializeEventChannel<T>(T assignedChannel, string eventName) where T : ScriptableObject
         {
             if (assignedChannel == null)
             {
                 Debug.LogWarning($"TimeController: {eventName} EventChannel not assigned. Creating runtime instance.");
-                runtimeChannel = ScriptableObject.CreateInstance<T>();
+                return ScriptableObject.CreateInstance<T>();
             }
             else
             {
-                runtimeChannel = assignedChannel;
                 Debug.Log($"TimeController: Using assigned {eventName} EventChannel.");
+                return assignedChannel;
             }
         }
 
@@ -101,15 +110,60 @@ namespace Script
         /// </summary>
         void Update()
         {
-            // Перевіряємо чи натиснута клавіша M (використовується нова Input System)
-            // Check if M key is pressed (using new Input System)
-            if (Keyboard.current != null && Keyboard.current.mKey.wasPressedThisFrame)
+            // Автоматичне збільшення години кожні N секунд
+            // Automatic hour increment every N seconds
+            _hourTimer += Time.deltaTime;
+            if (_hourTimer >= hourIncrementInterval)
             {
-                Debug.Log("M key pressed!");
-                // Встановлюємо годину на 1 (для тестування)
-                // Set hour to 1 (for testing)
-                hour = 1;
-                Debug.Log($"Hour set to: {hour}");
+                _hourTimer = 0f;
+                hour++;
+                
+                // Обмежуємо годину діапазоном 0-23 (циклічно)
+                // Limit hour to 0-23 range (cyclically)
+                hour = hour % 24;
+                
+                Debug.Log($"Auto-increment: Hour is now {hour}");
+            }
+            
+            // Перевіряємо клавіші для зміни часу доби (використовується нова Input System)
+            // Check keys for changing time of day (using new Input System)
+            if (Keyboard.current != null)
+            {
+                // M - Ранок (Morning) - 5:00
+                if (Keyboard.current.mKey.wasPressedThisFrame)
+                {
+                    Debug.Log("M key pressed - setting time to Morning!");
+                    hour = 5;
+                    _hourTimer = 0f; // Скидаємо таймер / Reset timer
+                    Debug.Log($"Hour set to: {hour} (Morning)");
+                }
+                
+                // A - День/Обід (Afternoon) - 13:00
+                if (Keyboard.current.aKey.wasPressedThisFrame)
+                {
+                    Debug.Log("A key pressed - setting time to Afternoon!");
+                    hour = 13;
+                    _hourTimer = 0f; // Скидаємо таймер / Reset timer
+                    Debug.Log($"Hour set to: {hour} (Afternoon)");
+                }
+                
+                // E - Вечір (Evening) - 18:00
+                if (Keyboard.current.eKey.wasPressedThisFrame)
+                {
+                    Debug.Log("E key pressed - setting time to Evening!");
+                    hour = 18;
+                    _hourTimer = 0f; // Скидаємо таймер / Reset timer
+                    Debug.Log($"Hour set to: {hour} (Evening)");
+                }
+                
+                // N - Ніч (Night) - 22:00
+                if (Keyboard.current.nKey.wasPressedThisFrame)
+                {
+                    Debug.Log("N key pressed - setting time to Night!");
+                    hour = 22;
+                    _hourTimer = 0f; // Скидаємо таймер / Reset timer
+                    Debug.Log($"Hour set to: {hour} (Night)");
+                }
             }
 
             // Перевіряємо чи змінилася година
