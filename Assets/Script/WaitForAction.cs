@@ -22,8 +22,7 @@ namespace Script
 
         protected override Status OnStart()
         {
-            // Перевіряємо чи призначені агент, тригер і об'єкт
-            // Check if agent, trigger and object are assigned
+            
             if (agent?.Value == null)
             {
                 Debug.LogError("WaitForAction: Agent is not assigned!");
@@ -48,35 +47,28 @@ namespace Script
 
         protected override Status OnUpdate()
         {
-            // Перевіряємо чи ще існують об'єкти
-            // Check if objects still exist
+          
             if (agent?.Value == null || trigger?.Value == null || @object?.Value == null)
             {
                 Debug.LogWarning("WaitForAction: Agent, Trigger or Object became null during execution");
                 return Status.Failure;
             }
 
-            // Обчислюємо відстань між тригером і об'єктом
-            // Calculate distance between trigger and object
             float distance = Vector3.Distance(trigger.Value.transform.position, @object.Value.transform.position);
             
-            // Якщо тригер наблизився до об'єкту на потрібну відстань - очікування завершено
-            // If trigger came close enough to the object - waiting is complete
+           
             if (distance <= arrivalDistance)
             {
                 Debug.Log($"{trigger.Value.name} arrived at {@object.Value.name} (distance: {distance:F2})");
                 return Status.Success;
             }
-
-            // Продовжуємо чекати
-            // Continue waiting
+            
             return Status.Running;
         }
 
         protected override void OnEnd()
         {
-            // Очищення ресурсів якщо потрібно
-            // Cleanup resources if needed
+            
         }
     }
 }

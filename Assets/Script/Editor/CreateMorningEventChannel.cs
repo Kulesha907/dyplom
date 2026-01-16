@@ -3,10 +3,9 @@ using UnityEngine;
 
 namespace Script.Editor
 {
-    /// <summary>
+    
     /// Автоматично створює EventChannel для різних частин доби
     /// Automatically creates EventChannels for different times of day
-    /// </summary>
     [InitializeOnLoad]
     public static class CreateTimeEventChannels
     {
@@ -14,11 +13,9 @@ namespace Script.Editor
         {
             EditorApplication.delayCall += CreateAllEventChannelsIfNeeded;
         }
-
-        /// <summary>
+        
         /// Створює всі EventChannel, якщо вони ще не існують
         /// Creates all EventChannels if they don't exist yet
-        /// </summary>
         private static void CreateAllEventChannelsIfNeeded()
         {
             // Створюємо EventChannel для всіх частин доби
@@ -28,11 +25,9 @@ namespace Script.Editor
             CreateEventChannel<Evening>("Assets/Evening.asset");
             CreateEventChannel<Night>("Assets/Night.asset");
         }
-
-        /// <summary>
+        
         /// Створює EventChannel заданого типу, якщо він ще не існує
         /// Creates an EventChannel of the given type if it doesn't exist
-        /// </summary>
         private static void CreateEventChannel<T>(string path) where T : ScriptableObject
         {
             // Перевіряємо чи вже існує
@@ -79,11 +74,9 @@ namespace Script.Editor
         {
             CreateEventChannelManually<Night>("Assets/Night.asset");
         }
-
-        /// <summary>
+        
         /// Створює EventChannel вручну через меню
         /// Creates an EventChannel manually through the menu
-        /// </summary>
         private static void CreateEventChannelManually<T>(string path) where T : ScriptableObject
         {
             var existing = AssetDatabase.LoadAssetAtPath<T>(path);

@@ -4,10 +4,10 @@ using Unity.Behavior;
 
 namespace Script
 {
-    /// <summary>
+   
     /// Контролер часу - управляє годинами та відправляє події для системи поведінки
     /// Time Controller - manages hours and sends events to the behavior system
-    /// </summary>
+    
     public class TimeController : MonoBehaviour
     {
         // Поточна година (0-23)
@@ -59,11 +59,13 @@ namespace Script
         // Попередня година для відстеження змін
         // Previous hour to track changes
         private int _previousHour = -1;
-
-        /// <summary>
+        
+        // Поточна активна подія (для відстеження завершення)
+        // Current active event (for tracking completion)
+        private string _currentActiveEvent;
+        
         /// Викликається при ініціалізації об'єкта
         /// Called when the object is initialized
-        /// </summary>
         void Start()
         {
             Debug.Log("TimeController: Start method called - script is active!");
@@ -82,14 +84,12 @@ namespace Script
             _runtimeAfternoonEvent = InitializeEventChannel(afternoonEventChannel, "Afternoon");
             _runtimeEveningEvent = InitializeEventChannel(eveningEventChannel, "Evening");
             _runtimeNightEvent = InitializeEventChannel(nightEventChannel, "Night");
-            
             _previousHour = hour;
         }
-
-        /// <summary>
+        
         /// Ініціалізує EventChannel (створює runtime instance якщо не призначений)
         /// Initializes an EventChannel (creates runtime instance if not assigned)
-        /// </summary>
+        
         private T InitializeEventChannel<T>(T assignedChannel, string eventName) where T : ScriptableObject
         {
             if (assignedChannel == null)
@@ -103,11 +103,10 @@ namespace Script
                 return assignedChannel;
             }
         }
-
-        /// <summary>
+        
         /// Викликається кожен кадр
         /// Called every frame
-        /// </summary>
+     
         void Update()
         {
             // Автоматичне збільшення години кожні N секунд
@@ -135,7 +134,13 @@ namespace Script
                     Debug.Log("M key pressed - setting time to Morning!");
                     hour = 5;
                     _hourTimer = 0f; // Скидаємо таймер / Reset timer
-                    Debug.Log($"Hour set to: {hour} (Morning)");
+                    ResetEventFlags(); // Скидаємо прапорці подій / Reset event flags
+                    _morningSent = false; // Дозволяємо відправити подію ранку / Allow morning event to be sent
+                    TriggerEvent(_runtimeMorningEvent, "Morning"); // Відразу викликаємо подію / Trigger event immediately
+                    _morningSent = true; // Позначаємо що подію відправлено / Mark event as sent
+                    _previousHour = hour; // Оновлюємо попередню годину щоб уникнути повторного виклику / Update previous hour to avoid duplicate trigger
+                    Debug.Log($"Hour set to: {hour} (Morning) - Event triggered");
+                    return; // Виходимо з Update щоб уникнути додаткових перевірок / Exit Update to avoid additional checks
                 }
                 
                 // A - День/Обід (Afternoon) - 13:00
@@ -144,7 +149,13 @@ namespace Script
                     Debug.Log("A key pressed - setting time to Afternoon!");
                     hour = 13;
                     _hourTimer = 0f; // Скидаємо таймер / Reset timer
-                    Debug.Log($"Hour set to: {hour} (Afternoon)");
+                    ResetEventFlags(); // Скидаємо прапорці подій / Reset event flags
+                    _afternoonSent = false; // Дозволяємо відправити подію обіду / Allow afternoon event to be sent
+                    TriggerEvent(_runtimeAfternoonEvent, "Afternoon"); // Відразу викликаємо подію / Trigger event immediately
+                    _afternoonSent = true; // Позначаємо що подію відправлено / Mark event as sent
+                    _previousHour = hour; // Оновлюємо попередню годину щоб уникнути повторного виклику / Update previous hour to avoid duplicate trigger
+                    Debug.Log($"Hour set to: {hour} (Afternoon) - Event triggered");
+                    return; // Виходимо з Update щоб уникнути додаткових перевірок / Exit Update to avoid additional checks
                 }
                 
                 // E - Вечір (Evening) - 18:00
@@ -153,7 +164,13 @@ namespace Script
                     Debug.Log("E key pressed - setting time to Evening!");
                     hour = 18;
                     _hourTimer = 0f; // Скидаємо таймер / Reset timer
-                    Debug.Log($"Hour set to: {hour} (Evening)");
+                    ResetEventFlags(); // Скидаємо прапорці подій / Reset event flags
+                    _eveningSent = false; // Дозволяємо відправити подію вечора / Allow evening event to be sent
+                    TriggerEvent(_runtimeEveningEvent, "Evening"); // Відразу викликаємо подію / Trigger event immediately
+                    _eveningSent = true; // Позначаємо що подію відправлено / Mark event as sent
+                    _previousHour = hour; // Оновлюємо попередню годину щоб уникнути повторного виклику / Update previous hour to avoid duplicate trigger
+                    Debug.Log($"Hour set to: {hour} (Evening) - Event triggered");
+                    return; // Виходимо з Update щоб уникнути додаткових перевірок / Exit Update to avoid additional checks
                 }
                 
                 // N - Ніч (Night) - 22:00
@@ -162,7 +179,13 @@ namespace Script
                     Debug.Log("N key pressed - setting time to Night!");
                     hour = 22;
                     _hourTimer = 0f; // Скидаємо таймер / Reset timer
-                    Debug.Log($"Hour set to: {hour} (Night)");
+                    ResetEventFlags(); // Скидаємо прапорці подій / Reset event flags
+                    _nightSent = false; // Дозволяємо відправити подію ночі / Allow night event to be sent
+                    TriggerEvent(_runtimeNightEvent, "Night"); // Відразу викликаємо подію / Trigger event immediately
+                    _nightSent = true; // Позначаємо що подію відправлено / Mark event as sent
+                    _previousHour = hour; // Оновлюємо попередню годину щоб уникнути повторного виклику / Update previous hour to avoid duplicate trigger
+                    Debug.Log($"Hour set to: {hour} (Night) - Event triggered");
+                    return; // Виходимо з Update щоб уникнути додаткових перевірок / Exit Update to avoid additional checks
                 }
             }
 
@@ -209,11 +232,10 @@ namespace Script
                 TriggerEvent(_runtimeNightEvent, "Night");
             }
         }
-
-        /// <summary>
+        
         /// Скидає всі прапорці подій (викликається при зміні години)
         /// Resets all event flags (called when hour changes)
-        /// </summary>
+      
         private void ResetEventFlags()
         {
             _morningSent = false;
@@ -221,14 +243,30 @@ namespace Script
             _eveningSent = false;
             _nightSent = false;
         }
-
-        /// <summary>
+        
         /// Викликає подію через EventChannel
         /// Triggers an event through an EventChannel
-        /// </summary>
+       
         private void TriggerEvent<T>(T eventChannel, string eventName) where T : EventChannelBase
         {
             Debug.Log($"Triggering {eventName} event at hour {hour}");
+            
+            // Завершуємо попередню подію, якщо вона існує і відрізняється від нової
+            // Complete previous event if it exists and is different from the new one
+            if (_currentActiveEvent != null && _currentActiveEvent != eventName)
+            {
+                Debug.Log($"Stopping previous event: {_currentActiveEvent}");
+                CompleteEvent(_currentActiveEvent);
+                
+                // КРИТИЧНО: Перезапускаємо агента щоб зупинити виконання попередньої поведінки
+                // CRITICAL: Restart the agent to stop execution of previous behavior
+                if (agent != null && agent.enabled)
+                {
+                    Debug.Log("Restarting Behavior Graph Agent to stop previous behavior");
+                    agent.End();
+                    agent.Start();
+                }
+            }
             
             if (agent != null)
             {
@@ -237,6 +275,24 @@ namespace Script
                 var blackboard = agent.BlackboardReference;
                 if (blackboard != null)
                 {
+                    // Скидаємо прапорець завершення для нової події ПЕРЕД її запуском
+                    // Reset completion flag for the new event BEFORE triggering it
+                    string completionVarName = $"{eventName}Completed";
+                    if (blackboard.GetVariable<bool>(completionVarName, out var completionVar))
+                    {
+                        completionVar.Value = false;
+                        Debug.Log($"{eventName} completion flag reset to false");
+                    }
+                    
+                    // Встановлюємо активність нової події
+                    // Set the new event as active
+                    string activeVarName = $"{eventName}Active";
+                    if (blackboard.GetVariable<bool>(activeVarName, out var activeVar))
+                    {
+                        activeVar.Value = true;
+                        Debug.Log($"{eventName} marked as active in blackboard variable {activeVarName}");
+                    }
+                    
                     // Отримуємо змінну з blackboard
                     // Get the variable from blackboard
                     if (blackboard.GetVariable<T>(eventName, out var eventVar))
@@ -245,6 +301,10 @@ namespace Script
                         // Send the event through the blackboard variable
                         eventVar.Value?.SendEventMessage(System.Array.Empty<BlackboardVariable>());
                         Debug.Log($"{eventName} event triggered through blackboard successfully");
+                        
+                        // Встановлюємо поточну активну подію
+                        // Set current active event
+                        _currentActiveEvent = eventName;
                     }
                     else
                     {
@@ -254,6 +314,10 @@ namespace Script
                         {
                             eventChannel.SendEventMessage(System.Array.Empty<BlackboardVariable>());
                             Debug.Log($"{eventName} event triggered globally (no blackboard variable found)");
+                            
+                            // Встановлюємо поточну активну подію
+                            // Set current active event
+                            _currentActiveEvent = eventName;
                         }
                         else
                         {
@@ -269,6 +333,44 @@ namespace Script
             else
             {
                 Debug.LogError($"Cannot trigger {eventName} event: agent is null!");
+            }
+        }
+        
+        /// Завершує попередню подію
+        /// Completes a previous event
+        
+        private void CompleteEvent(string eventName)
+        {
+            Debug.Log($"Completing and deactivating previous event: {eventName}");
+            
+            if (agent != null)
+            {
+                var blackboard = agent.BlackboardReference;
+                if (blackboard != null)
+                {
+                    // Намагаємося встановити змінну завершення події в blackboard
+                    // Try to set event completion variable in blackboard
+                    string completionVarName = $"{eventName}Completed";
+                    
+                    if (blackboard.GetVariable<bool>(completionVarName, out var completionVar))
+                    {
+                        completionVar.Value = true;
+                        Debug.Log($"{eventName} marked as completed in blackboard variable {completionVarName}");
+                    }
+                    else
+                    {
+                        Debug.Log($"No completion variable found for {eventName} (expected variable name: {completionVarName})");
+                    }
+                    
+                    // Додатково: намагаємося скинути активність події
+                    // Additionally: try to reset event activity
+                    string activeVarName = $"{eventName}Active";
+                    if (blackboard.GetVariable<bool>(activeVarName, out var activeVar))
+                    {
+                        activeVar.Value = false;
+                        Debug.Log($"{eventName} marked as inactive in blackboard variable {activeVarName}");
+                    }
+                }
             }
         }
     }
