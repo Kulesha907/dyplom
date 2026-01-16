@@ -182,28 +182,28 @@ namespace Script
             // Check and trigger events based on the hour
             
             // Ранок (Morning) - 5:00
-            if (hour >= 5 && hour < 13 && !_morningSent)
+            if (hour == 5 && !_morningSent)
             {
                 _morningSent = true;
                 TriggerEvent(_runtimeMorningEvent, "Morning");
             }
             
             // День (Afternoon) - 13:00
-            if (hour >= 13 && hour < 18 && !_afternoonSent)
+            if (hour == 13 && !_afternoonSent)
             {
                 _afternoonSent = true;
                 TriggerEvent(_runtimeAfternoonEvent, "Afternoon");
             }
             
             // Вечір (Evening) - 18:00
-            if (hour >= 18 && hour < 22 && !_eveningSent)
+            if (hour == 18 && !_eveningSent)
             {
                 _eveningSent = true;
                 TriggerEvent(_runtimeEveningEvent, "Evening");
             }
             
             // Ніч (Night) - 22:00 і 00:00
-            if ((hour >= 22 || hour < 5) && !_nightSent)
+            if ((hour == 22 || hour == 0) && !_nightSent)
             {
                 _nightSent = true;
                 TriggerEvent(_runtimeNightEvent, "Night");

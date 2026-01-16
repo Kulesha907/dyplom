@@ -363,7 +363,7 @@ MonoBehaviour:
   - rid: 2495113140265812207
   - rid: 2495113140265812208
   - rid: 2495113140265812246
-  - rid: 2495113300825079992
+  - rid: 2495113314607562906
   m_OriginalGraph: {fileID: 2312695560635926662, guid: 2901d0fef47064942848619f1f10b0f6, type: 2}
   m_IsInitialised: 0
   m_IsStarted: 0
@@ -397,12 +397,12 @@ MonoBehaviour:
           m_Value1: 5751457070096507936
         Name: cowshed
         m_Value: {fileID: 1256122409}
-    - rid: 2495113300825079992
+    - rid: 2495113314607562906
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
-          m_Value0: 1353472512574534061
-          m_Value1: 16848198893427618052
+          m_Value0: 17555779824988088311
+          m_Value1: 2988017725057355942
         Name: farmer
         m_Value: {fileID: 789680378}
 --- !u!195 &313765163
@@ -441,7 +441,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Script.TimeController
   hour: 0
   agent: {fileID: 313765162}
-  hourIncrementInterval: 5
+  hourIncrementInterval: 10
   morningEventChannel: {fileID: 0}
   afternoonEventChannel: {fileID: 0}
   eveningEventChannel: {fileID: 0}
@@ -1076,7 +1076,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Script.TimeController
   hour: 0
   agent: {fileID: 789680385}
-  hourIncrementInterval: 5
+  hourIncrementInterval: 10
   morningEventChannel: {fileID: 0}
   afternoonEventChannel: {fileID: 0}
   eveningEventChannel: {fileID: 0}

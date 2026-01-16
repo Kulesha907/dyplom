@@ -7,22 +7,23 @@ using Unity.Properties;
 namespace Script
 {
     [Serializable, GeneratePropertyBag]
-    [NodeDescription(name: "Wait for", story: "[Agent] is waiting for a [trigger]", category: "Action", id: "f84e13ddaa2feb6f64b8494bc75b229c")]
+    [NodeDescription(name: "Wait for", story: "[Agent] waits until the [trigger] is near the [object]", category: "Action", id: "f84e13ddaa2feb6f64b8494bc75b229c")]
     public class WaitForAction : Action
     {
         [SerializeReference] public BlackboardVariable<GameObject> agent;
         [SerializeReference] public BlackboardVariable<GameObject> trigger;
+        [SerializeReference] public BlackboardVariable<GameObject> @object;
         
         // Відстань, на якій тригер вважається "прибувшим"
         // Distance at which the trigger is considered "arrived"
         [SerializeField] 
-        [Tooltip("Мінімальна відстань між агентом і тригером для завершення очікування / Minimum distance between agent and trigger to complete waiting")]
-        public float arrivalDistance = 1500.0f;
+        [Tooltip("Мінімальна відстань між тригером і об'єктом для завершення очікування / Minimum distance between trigger and object to complete waiting")]
+        public float arrivalDistance = 5.0f;
 
         protected override Status OnStart()
         {
-            // Перевіряємо чи призначені агент і тригер
-            // Check if agent and trigger are assigned
+            // Перевіряємо чи призначені агент, тригер і об'єкт
+            // Check if agent, trigger and object are assigned
             if (agent?.Value == null)
             {
                 Debug.LogError("WaitForAction: Agent is not assigned!");
@@ -35,7 +36,13 @@ namespace Script
                 return Status.Failure;
             }
 
-            Debug.Log($"{agent.Value.name} started waiting for {trigger.Value.name}");
+            if (@object?.Value == null)
+            {
+                Debug.LogError("WaitForAction: Object is not assigned!");
+                return Status.Failure;
+            }
+
+            Debug.Log($"{agent.Value.name} started waiting for {trigger.Value.name} to arrive at {@object.Value.name}");
             return Status.Running;
         }
 
@@ -43,21 +50,21 @@ namespace Script
         {
             // Перевіряємо чи ще існують об'єкти
             // Check if objects still exist
-            if (agent?.Value == null || trigger?.Value == null)
+            if (agent?.Value == null || trigger?.Value == null || @object?.Value == null)
             {
-                Debug.LogWarning("WaitForAction: Agent or Trigger became null during execution");
+                Debug.LogWarning("WaitForAction: Agent, Trigger or Object became null during execution");
                 return Status.Failure;
             }
 
-            // Обчислюємо відстань між агентом і тригером
-            // Calculate distance between agent and trigger
-            float distance = Vector3.Distance(agent.Value.transform.position, trigger.Value.transform.position);
+            // Обчислюємо відстань між тригером і об'єктом
+            // Calculate distance between trigger and object
+            float distance = Vector3.Distance(trigger.Value.transform.position, @object.Value.transform.position);
             
-            // Якщо тригер наблизився на потрібну відстань - очікування завершено
-            // If trigger came close enough - waiting is complete
+            // Якщо тригер наблизився до об'єкту на потрібну відстань - очікування завершено
+            // If trigger came close enough to the object - waiting is complete
             if (distance <= arrivalDistance)
             {
-                Debug.Log($"{trigger.Value.name} arrived at {agent.Value.name} (distance: {distance:F2})");
+                Debug.Log($"{trigger.Value.name} arrived at {@object.Value.name} (distance: {distance:F2})");
                 return Status.Success;
             }
 
