@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Behavior;
 
@@ -26,36 +28,34 @@ namespace Script
         // Interval in seconds to increment the hour
         [Tooltip("Час у секундах між автоматичним збільшенням години / Time in seconds between automatic hour increments")]
         public float hourIncrementInterval = 10f;
-        
-        // Канали подій для різних частин доби (необов'язково, створюються автоматично якщо не призначені)
-        // Event channels for different times of day (optional, created automatically if not assigned)
-        [Header("Event Channels (optional)")]
-        [Tooltip("Optional: Assign Morning EventChannel asset here. If not assigned, it will be created at runtime.")]
-        public Morning morningEventChannel;
-        
-        [Tooltip("Optional: Assign Afternoon EventChannel asset here. If not assigned, it will be created at runtime.")]
-        public Afternoon afternoonEventChannel;
-        
-        [Tooltip("Optional: Assign Evening EventChannel asset here. If not assigned, it will be created at runtime.")]
-        public Evening eveningEventChannel;
-        
-        [Tooltip("Optional: Assign Night EventChannel asset here. If not assigned, it will be created at runtime.")]
-        public Night nightEventChannel;
 
-        // Прапорці для відстеження чи були відправлені події для кожної частини доби
-        // Flags to track if events have been sent for each time of day
-        private bool _morningSent;
-        private bool _afternoonSent;
-        private bool _eveningSent;
-        private bool _nightSent;
+        // Клас для опису події яка відбувається в певну годину
+        // Class for describing an event that occurs at a specific hour
+        [Serializable]
+        public class TimeOfDayEvent
+        {
+            [Tooltip("Назва події / Event name")]
+            public string name;
+            
+            [Tooltip("Канал події для викликання / Event channel to trigger")]
+            public EventChannel eventChannel;
+            
+            [Tooltip("Година коли викликається подія (0-23) / Hour when the event is triggered (0-23)")]
+            public int triggerHour;
+            
+            [Tooltip("Клавіша для ручного виклику події (опціонально) / Key for manual event triggering (optional)")]
+            public Key shortcutKey = Key.None;
+            
+            // Внутрішній прапорець для відстеження чи подія була відправлена
+            // Internal flag to track if the event has been sent
+            [HideInInspector]
+            public bool hasBeenTriggered;
+        }
         
-        // Внутрішні посилання на канали подій
-        // Internal references to event channels
-        private Morning _runtimeMorningEvent;
-        private Afternoon _runtimeAfternoonEvent;
-        private Evening _runtimeEveningEvent;
-        private Night _runtimeNightEvent;
-        
+        [Header("Налаштування подій часу доби / Time of Day Events Setup")]
+        [Tooltip("Список подій які викликаються в певні години / List of events triggered at specific hours")]
+        public List<TimeOfDayEvent> timeOfDayEvents = new List<TimeOfDayEvent>();
+          
         // Попередня година для відстеження змін
         // Previous hour to track changes
         private int _previousHour = -1;
@@ -77,36 +77,32 @@ namespace Script
             {
                 Debug.LogWarning("TimeController: BehaviorGraphAgent is not assigned! Please assign it in the Inspector.");
             }
-
-            // Ініціалізація EventChannel для всіх частин доби
-            // Initialize EventChannels for all times of day
-            _runtimeMorningEvent = InitializeEventChannel(morningEventChannel, "Morning");
-            _runtimeAfternoonEvent = InitializeEventChannel(afternoonEventChannel, "Afternoon");
-            _runtimeEveningEvent = InitializeEventChannel(eveningEventChannel, "Evening");
-            _runtimeNightEvent = InitializeEventChannel(nightEventChannel, "Night");
-            _previousHour = hour;
-        }
-        
-        /// Ініціалізує EventChannel (створює runtime instance якщо не призначений)
-        /// Initializes an EventChannel (creates runtime instance if not assigned)
-        
-        private T InitializeEventChannel<T>(T assignedChannel, string eventName) where T : ScriptableObject
-        {
-            if (assignedChannel == null)
+            
+            // Валідація налаштувань подій
+            // Validate event settings
+            if (timeOfDayEvents == null || timeOfDayEvents.Count == 0)
             {
-                Debug.LogWarning($"TimeController: {eventName} EventChannel not assigned. Creating runtime instance.");
-                return ScriptableObject.CreateInstance<T>();
+                Debug.LogWarning("TimeController: No time of day events configured! Please add events to the timeOfDayEvents list.");
             }
             else
             {
-                Debug.Log($"TimeController: Using assigned {eventName} EventChannel.");
-                return assignedChannel;
+                Debug.Log($"TimeController: Configured {timeOfDayEvents.Count} time of day events:");
+                foreach (var evt in timeOfDayEvents)
+                {
+                    if (evt.eventChannel == null)
+                    {
+                        Debug.LogWarning($"TimeController: Event '{evt.name}' at hour {evt.triggerHour} has no EventChannel assigned!");
+                    }
+                    else
+                    {
+                        Debug.Log($"  - {evt.name} at hour {evt.triggerHour}" + (evt.shortcutKey != Key.None ? $" (shortcut: {evt.shortcutKey})" : ""));
+                    }
+                }
             }
         }
         
         /// Викликається кожен кадр
         /// Called every frame
-     
         void Update()
         {
             // Автоматичне збільшення години кожні N секунд
@@ -124,68 +120,25 @@ namespace Script
                 Debug.Log($"Auto-increment: Hour is now {hour}");
             }
             
-            // Перевіряємо клавіші для зміни часу доби (використовується нова Input System)
-            // Check keys for changing time of day (using new Input System)
-            if (Keyboard.current != null)
+            // Перевіряємо клавіші для ручного виклику подій
+            // Check keyboard shortcuts for manual event triggering
+            if (Keyboard.current != null && timeOfDayEvents != null)
             {
-                // M - Ранок (Morning) - 5:00
-                if (Keyboard.current.mKey.wasPressedThisFrame)
+                foreach (var evt in timeOfDayEvents)
                 {
-                    Debug.Log("M key pressed - setting time to Morning!");
-                    hour = 5;
-                    _hourTimer = 0f; // Скидаємо таймер / Reset timer
-                    ResetEventFlags(); // Скидаємо прапорці подій / Reset event flags
-                    _morningSent = false; // Дозволяємо відправити подію ранку / Allow morning event to be sent
-                    TriggerEvent(_runtimeMorningEvent, "Morning"); // Відразу викликаємо подію / Trigger event immediately
-                    _morningSent = true; // Позначаємо що подію відправлено / Mark event as sent
-                    _previousHour = hour; // Оновлюємо попередню годину щоб уникнути повторного виклику / Update previous hour to avoid duplicate trigger
-                    Debug.Log($"Hour set to: {hour} (Morning) - Event triggered");
-                    return; // Виходимо з Update щоб уникнути додаткових перевірок / Exit Update to avoid additional checks
-                }
-                
-                // A - День/Обід (Afternoon) - 13:00
-                if (Keyboard.current.aKey.wasPressedThisFrame)
-                {
-                    Debug.Log("A key pressed - setting time to Afternoon!");
-                    hour = 13;
-                    _hourTimer = 0f; // Скидаємо таймер / Reset timer
-                    ResetEventFlags(); // Скидаємо прапорці подій / Reset event flags
-                    _afternoonSent = false; // Дозволяємо відправити подію обіду / Allow afternoon event to be sent
-                    TriggerEvent(_runtimeAfternoonEvent, "Afternoon"); // Відразу викликаємо подію / Trigger event immediately
-                    _afternoonSent = true; // Позначаємо що подію відправлено / Mark event as sent
-                    _previousHour = hour; // Оновлюємо попередню годину щоб уникнути повторного виклику / Update previous hour to avoid duplicate trigger
-                    Debug.Log($"Hour set to: {hour} (Afternoon) - Event triggered");
-                    return; // Виходимо з Update щоб уникнути додаткових перевірок / Exit Update to avoid additional checks
-                }
-                
-                // E - Вечір (Evening) - 18:00
-                if (Keyboard.current.eKey.wasPressedThisFrame)
-                {
-                    Debug.Log("E key pressed - setting time to Evening!");
-                    hour = 18;
-                    _hourTimer = 0f; // Скидаємо таймер / Reset timer
-                    ResetEventFlags(); // Скидаємо прапорці подій / Reset event flags
-                    _eveningSent = false; // Дозволяємо відправити подію вечора / Allow evening event to be sent
-                    TriggerEvent(_runtimeEveningEvent, "Evening"); // Відразу викликаємо подію / Trigger event immediately
-                    _eveningSent = true; // Позначаємо що подію відправлено / Mark event as sent
-                    _previousHour = hour; // Оновлюємо попередню годину щоб уникнути повторного виклику / Update previous hour to avoid duplicate trigger
-                    Debug.Log($"Hour set to: {hour} (Evening) - Event triggered");
-                    return; // Виходимо з Update щоб уникнути додаткових перевірок / Exit Update to avoid additional checks
-                }
-                
-                // N - Ніч (Night) - 22:00
-                if (Keyboard.current.nKey.wasPressedThisFrame)
-                {
-                    Debug.Log("N key pressed - setting time to Night!");
-                    hour = 22;
-                    _hourTimer = 0f; // Скидаємо таймер / Reset timer
-                    ResetEventFlags(); // Скидаємо прапорці подій / Reset event flags
-                    _nightSent = false; // Дозволяємо відправити подію ночі / Allow night event to be sent
-                    TriggerEvent(_runtimeNightEvent, "Night"); // Відразу викликаємо подію / Trigger event immediately
-                    _nightSent = true; // Позначаємо що подію відправлено / Mark event as sent
-                    _previousHour = hour; // Оновлюємо попередню годину щоб уникнути повторного виклику / Update previous hour to avoid duplicate trigger
-                    Debug.Log($"Hour set to: {hour} (Night) - Event triggered");
-                    return; // Виходимо з Update щоб уникнути додаткових перевірок / Exit Update to avoid additional checks
+                    if (evt.shortcutKey != Key.None && Keyboard.current[evt.shortcutKey].wasPressedThisFrame)
+                    {
+                        Debug.Log($"{evt.shortcutKey} key pressed - setting time to {evt.name}!");
+                        hour = evt.triggerHour;
+                        _hourTimer = 0f; // Скидаємо таймер / Reset timer
+                        ResetEventFlags(); // Скидаємо прапорці подій / Reset event flags
+                        evt.hasBeenTriggered = false; // Дозволяємо відправити подію / Allow event to be sent
+                        TriggerEventByName(evt.name, evt.eventChannel); // Відразу викликаємо подію / Trigger event immediately
+                        evt.hasBeenTriggered = true; // Позначаємо що подію відправлено / Mark event as sent
+                        _previousHour = hour; // Оновлюємо попередню годину щоб уникнути повторного виклику / Update previous hour to avoid duplicate trigger
+                        Debug.Log($"Hour set to: {hour} ({evt.name}) - Event triggered");
+                        return; // Виходимо з Update щоб уникнути додаткових перевірок / Exit Update to avoid additional checks
+                    }
                 }
             }
 
@@ -203,53 +156,47 @@ namespace Script
 
             // Перевірка та виклик подій залежно від години
             // Check and trigger events based on the hour
-            
-            // Ранок (Morning) - 5:00
-            if (hour == 5 && !_morningSent)
+            if (timeOfDayEvents != null)
             {
-                _morningSent = true;
-                TriggerEvent(_runtimeMorningEvent, "Morning");
-            }
-            
-            // День (Afternoon) - 13:00
-            if (hour == 13 && !_afternoonSent)
-            {
-                _afternoonSent = true;
-                TriggerEvent(_runtimeAfternoonEvent, "Afternoon");
-            }
-            
-            // Вечір (Evening) - 18:00
-            if (hour == 18 && !_eveningSent)
-            {
-                _eveningSent = true;
-                TriggerEvent(_runtimeEveningEvent, "Evening");
-            }
-            
-            // Ніч (Night) - 22:00 і 00:00
-            if ((hour == 22 || hour == 0) && !_nightSent)
-            {
-                _nightSent = true;
-                TriggerEvent(_runtimeNightEvent, "Night");
+                foreach (var evt in timeOfDayEvents)
+                {
+                    // Перевіряємо чи настав час для цієї події і чи вона ще не була викликана
+                    // Check if it's time for this event and if it hasn't been triggered yet
+                    if (hour == evt.triggerHour && !evt.hasBeenTriggered)
+                    {
+                        evt.hasBeenTriggered = true;
+                        TriggerEventByName(evt.name, evt.eventChannel);
+                    }
+                }
             }
         }
         
         /// Скидає всі прапорці подій (викликається при зміні години)
         /// Resets all event flags (called when hour changes)
-      
         private void ResetEventFlags()
         {
-            _morningSent = false;
-            _afternoonSent = false;
-            _eveningSent = false;
-            _nightSent = false;
+            if (timeOfDayEvents != null)
+            {
+                foreach (var evt in timeOfDayEvents)
+                {
+                    evt.hasBeenTriggered = false;
+                }
+            }
         }
         
         /// Викликає подію через EventChannel
         /// Triggers an event through an EventChannel
-       
-        private void TriggerEvent<T>(T eventChannel, string eventName) where T : EventChannelBase
+        private void TriggerEventByName(string eventName, EventChannel eventChannel)
         {
             Debug.Log($"Triggering {eventName} event at hour {hour}");
+            
+            // Перевірка чи призначений EventChannel
+            // Check if EventChannel is assigned
+            if (eventChannel == null)
+            {
+                Debug.LogError($"Cannot trigger {eventName} event: eventChannel is null! Please assign an EventChannel in the Inspector.");
+                return;
+            }
             
             // Завершуємо попередню подію, якщо вона існує і відрізняється від нової
             // Complete previous event if it exists and is different from the new one
@@ -295,11 +242,11 @@ namespace Script
                     
                     // Отримуємо змінну з blackboard
                     // Get the variable from blackboard
-                    if (blackboard.GetVariable<T>(eventName, out var eventVar))
+                    if (blackboard.GetVariable<EventChannel>(eventName, out var eventVar))
                     {
                         // Відправляємо подію через змінну blackboard
                         // Send the event through the blackboard variable
-                        eventVar.Value?.SendEventMessage(System.Array.Empty<BlackboardVariable>());
+                        eventVar.Value?.SendEventMessage(Array.Empty<BlackboardVariable>());
                         Debug.Log($"{eventName} event triggered through blackboard successfully");
                         
                         // Встановлюємо поточну активну подію
@@ -310,19 +257,12 @@ namespace Script
                     {
                         // Запасний варіант: намагаємося відправити глобальну подію
                         // Fallback: try sending global event
-                        if (eventChannel != null)
-                        {
-                            eventChannel.SendEventMessage(System.Array.Empty<BlackboardVariable>());
-                            Debug.Log($"{eventName} event triggered globally (no blackboard variable found)");
-                            
-                            // Встановлюємо поточну активну подію
-                            // Set current active event
-                            _currentActiveEvent = eventName;
-                        }
-                        else
-                        {
-                            Debug.LogError($"Cannot trigger {eventName} event: no {eventName} variable in blackboard and no runtime event!");
-                        }
+                        eventChannel.SendEventMessage(Array.Empty<BlackboardVariable>());
+                        Debug.Log($"{eventName} event triggered globally (no blackboard variable found)");
+                        
+                        // Встановлюємо поточну активну подію
+                        // Set current active event
+                        _currentActiveEvent = eventName;
                     }
                 }
                 else

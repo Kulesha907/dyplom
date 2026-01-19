@@ -230,6 +230,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &259740478
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 259740479}
+  m_Layer: 0
+  m_Name: cowshed_centr
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &259740479
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 259740478}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -18.72, y: 1.04, z: -10.89}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &313765157
 GameObject:
   m_ObjectHideFlags: 0
@@ -244,11 +275,10 @@ GameObject:
   - component: {fileID: 313765158}
   - component: {fileID: 313765163}
   - component: {fileID: 313765162}
-  - component: {fileID: 313765164}
   m_Layer: 3
   m_Name: cow
   m_TagString: Untagged
-  m_Icon: {fileID: -5397416234189338067, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 2800000, guid: 050022165e47045c7a80b25c7ea63c95, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -365,6 +395,8 @@ MonoBehaviour:
   - rid: 2495113140265812246
   - rid: 2495113314607562906
   - rid: 2495113322019422572
+  - rid: 2495113381413388442
+  - rid: 2495113390644003296
   m_OriginalGraph: {fileID: 2312695560635926662, guid: 2901d0fef47064942848619f1f10b0f6, type: 2}
   m_IsInitialised: 0
   m_IsStarted: 0
@@ -414,6 +446,22 @@ MonoBehaviour:
           m_Value1: 10092494426858867510
         Name: point
         m_Value: {fileID: 801498094}
+    - rid: 2495113381413388442
+      type: {class: 'BlackboardVariable`1[[Afternoon, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 18055975489459367461
+          m_Value1: 16528155285394744663
+        Name: Afternoon
+        m_Value: {fileID: 0}
+    - rid: 2495113390644003296
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 9204152373282280143
+          m_Value1: 16248542741521072588
+        Name: cowshed_centr
+        m_Value: {fileID: 259740478}
 --- !u!195 &313765163
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -436,25 +484,6 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &313765164
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 313765157}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4361f12ebe848e49fa364c101091dcd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Script.TimeController
-  hour: 0
-  agent: {fileID: 313765162}
-  hourIncrementInterval: 10
-  morningEventChannel: {fileID: 0}
-  afternoonEventChannel: {fileID: 0}
-  eveningEventChannel: {fileID: 0}
-  nightEventChannel: {fileID: 0}
 --- !u!1 &316592289
 GameObject:
   m_ObjectHideFlags: 0
@@ -860,7 +889,6 @@ GameObject:
   - component: {fileID: 789680385}
   - component: {fileID: 789680387}
   - component: {fileID: 789680386}
-  - component: {fileID: 789680388}
   m_Layer: 3
   m_Name: farmer
   m_TagString: Untagged
@@ -1071,25 +1099,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &789680388
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 789680378}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4361f12ebe848e49fa364c101091dcd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Script.TimeController
-  hour: 0
-  agent: {fileID: 789680385}
-  hourIncrementInterval: 10
-  morningEventChannel: {fileID: 0}
-  afternoonEventChannel: {fileID: 0}
-  eveningEventChannel: {fileID: 0}
-  nightEventChannel: {fileID: 0}
 --- !u!1 &801498094
 GameObject:
   m_ObjectHideFlags: 0
@@ -1165,6 +1174,74 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1165794804
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1165794806}
+  - component: {fileID: 1165794805}
+  m_Layer: 0
+  m_Name: TimeController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1165794805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1165794804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4361f12ebe848e49fa364c101091dcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Script.TimeController
+  hour: 0
+  agent: {fileID: 313765162}
+  hourIncrementInterval: 10
+  timeOfDayEvents:
+  - name: Morning
+    eventChannel: {fileID: 11400000, guid: ea29135d4fbe5b746883971a2bb5d240, type: 2}
+    triggerHour: 5
+    shortcutKey: 0
+    hasBeenTriggered: 0
+  - name: Afternoon
+    eventChannel: {fileID: 11400000, guid: caf01926e39c8e74695d357736db1e65, type: 2}
+    triggerHour: 13
+    shortcutKey: 0
+    hasBeenTriggered: 0
+  - name: Evening
+    eventChannel: {fileID: 11400000, guid: 26087ed2b78d13a4a9dba062bdb43726, type: 2}
+    triggerHour: 18
+    shortcutKey: 0
+    hasBeenTriggered: 0
+  - name: Night
+    eventChannel: {fileID: 11400000, guid: cee91c097d232b1479e8d517dd1c88cf, type: 2}
+    triggerHour: 22
+    shortcutKey: 0
+    hasBeenTriggered: 0
+--- !u!4 &1165794806
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1165794804}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.11238, y: 3.42531, z: -5.98047}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1552,3 +1629,5 @@ SceneRoots:
   - {fileID: 801498095}
   - {fileID: 1877947552}
   - {fileID: 316592290}
+  - {fileID: 1165794806}
+  - {fileID: 259740479}
