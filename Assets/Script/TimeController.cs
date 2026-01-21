@@ -124,8 +124,9 @@ namespace Script
             // Check keyboard shortcuts for manual event triggering
             if (Keyboard.current != null && timeOfDayEvents != null)
             {
-                foreach (var evt in timeOfDayEvents)
+                for (int i = 0; i < timeOfDayEvents.Count; i++)
                 {
+                    var evt = timeOfDayEvents[i];
                     if (evt.shortcutKey != Key.None && Keyboard.current[evt.shortcutKey].wasPressedThisFrame)
                     {
                         Debug.Log($"{evt.shortcutKey} key pressed - setting time to {evt.name}!");
@@ -158,8 +159,9 @@ namespace Script
             // Check and trigger events based on the hour
             if (timeOfDayEvents != null)
             {
-                foreach (var evt in timeOfDayEvents)
+                for (int i = 0; i < timeOfDayEvents.Count; i++)
                 {
+                    var evt = timeOfDayEvents[i];
                     // Перевіряємо чи настав час для цієї події і чи вона ще не була викликана
                     // Check if it's time for this event and if it hasn't been triggered yet
                     if (hour == evt.triggerHour && !evt.hasBeenTriggered)
@@ -203,22 +205,42 @@ namespace Script
             if (_currentActiveEvent != null && _currentActiveEvent != eventName)
             {
                 Debug.Log($"Stopping previous event: {_currentActiveEvent}");
+                
+                // КРИТИЧНО: Спочатку завершуємо подію в blackboard
+                // CRITICAL: First complete the event in blackboard
                 CompleteEvent(_currentActiveEvent);
                 
-                // КРИТИЧНО: Перезапускаємо агента щоб зупинити виконання попередньої поведінки
-                // CRITICAL: Restart the agent to stop execution of previous behavior
+                // КРИТИЧНО: Перезапускаємо агента і запускаємо нову подію через корутину
+                // CRITICAL: Restart the agent and trigger new event via coroutine
                 if (agent != null && agent.enabled)
                 {
                     Debug.Log("Restarting Behavior Graph Agent to stop previous behavior");
+                    
+                    // Вимикаємо агента
+                    // Disable the agent
+                    agent.enabled = false;
                     agent.End();
-                    agent.Start();
+                    
+                    // Перезапускаємо і відправляємо нову подію через корутину
+                    // Restart and send new event via coroutine
+                    StartCoroutine(RestartAgentAndTriggerEvent(eventName, eventChannel));
+                    return; // Виходимо щоб не відправити подію двічі / Exit to avoid sending event twice
                 }
             }
             
+            // Якщо немає попередньої події або агент вимкнений - відправляємо подію одразу
+            // If no previous event or agent is disabled - send event immediately
+            SendEventToAgent(eventName, eventChannel);
+        }
+        
+        /// <summary>
+        /// Відправляє подію агенту та встановлює blackboard змінні
+        /// Sends event to agent and sets blackboard variables
+        /// </summary>
+        private void SendEventToAgent(string eventName, EventChannel eventChannel)
+        {
             if (agent != null)
             {
-                // Намагаємося знайти та запустити змінну в blackboard агента
-                // Try to find and trigger the variable in agent's blackboard
                 var blackboard = agent.BlackboardReference;
                 if (blackboard != null)
                 {
@@ -239,41 +261,25 @@ namespace Script
                         activeVar.Value = true;
                         Debug.Log($"{eventName} marked as active in blackboard variable {activeVarName}");
                     }
-                    
-                    // Отримуємо змінну з blackboard
-                    // Get the variable from blackboard
-                    if (blackboard.GetVariable<EventChannel>(eventName, out var eventVar))
-                    {
-                        // Відправляємо подію через змінну blackboard
-                        // Send the event through the blackboard variable
-                        eventVar.Value?.SendEventMessage(Array.Empty<BlackboardVariable>());
-                        Debug.Log($"{eventName} event triggered through blackboard successfully");
-                        
-                        // Встановлюємо поточну активну подію
-                        // Set current active event
-                        _currentActiveEvent = eventName;
-                    }
-                    else
-                    {
-                        // Запасний варіант: намагаємося відправити глобальну подію
-                        // Fallback: try sending global event
-                        eventChannel.SendEventMessage(Array.Empty<BlackboardVariable>());
-                        Debug.Log($"{eventName} event triggered globally (no blackboard variable found)");
-                        
-                        // Встановлюємо поточну активну подію
-                        // Set current active event
-                        _currentActiveEvent = eventName;
-                    }
                 }
                 else
                 {
-                    Debug.LogError($"Cannot trigger {eventName} event: agent blackboard is null!");
+                    Debug.LogWarning($"Agent blackboard is null, events may not work properly");
                 }
             }
             else
             {
-                Debug.LogError($"Cannot trigger {eventName} event: agent is null!");
+                Debug.LogWarning($"Agent is null, only global event will be sent");
             }
+            
+            // ГОЛОВНЕ: Відправляємо подію через EventChannel (це працює глобально для всіх агентів)
+            // MAIN: Send event through EventChannel (this works globally for all agents)
+            eventChannel.SendEventMessage(Array.Empty<BlackboardVariable>());
+            Debug.Log($"{eventName} event sent through EventChannel successfully");
+            
+            // Встановлюємо поточну активну подію
+            // Set current active event
+            _currentActiveEvent = eventName;
         }
         
         /// Завершує попередню подію
@@ -311,6 +317,32 @@ namespace Script
                         Debug.Log($"{eventName} marked as inactive in blackboard variable {activeVarName}");
                     }
                 }
+            }
+        }
+        
+        /// <summary>
+        /// Перезапускає агента в наступному кадрі та відправляє нову подію
+        /// Restarts the agent in the next frame and sends new event
+        /// </summary>
+        private System.Collections.IEnumerator RestartAgentAndTriggerEvent(string eventName, EventChannel eventChannel)
+        {
+            // Чекаємо один кадр щоб всі зміни в blackboard застосувалися
+            // Wait one frame for all blackboard changes to apply
+            yield return null;
+            
+            if (agent != null)
+            {
+                agent.enabled = true;
+                agent.Start();
+                Debug.Log("Behavior Graph Agent restarted successfully");
+                
+                // Чекаємо ще один кадр щоб агент повністю ініціалізувався
+                // Wait one more frame for agent to fully initialize
+                yield return null;
+                
+                // Тепер відправляємо нову подію
+                // Now send the new event
+                SendEventToAgent(eventName, eventChannel);
             }
         }
     }
