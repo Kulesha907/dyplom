@@ -16,6 +16,8 @@ namespace Script
         // Current hour (0-23)
         [Range(0, 23)] public int hour;
 
+        
+        
         // Посилання на агента з Behavior Graph
         // Reference to the Behavior Graph agent
         public BehaviorGraphAgent agent;
