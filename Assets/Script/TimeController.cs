@@ -55,6 +55,22 @@ namespace Script
         [Header("Налаштування подій часу доби / Time of Day Events Setup")]
         [Tooltip("Список подій які викликаються в певні години / List of events triggered at specific hours")]
         public List<TimeOfDayEvent> timeOfDayEvents = new List<TimeOfDayEvent>();
+        
+        [Header("Налаштування швидкості часу / Time Speed Settings")]
+        [Tooltip("UI слайдер для керування швидкістю часу / UI slider for time speed control")]
+        public Slider timeSpeedSlider;
+        
+        [Tooltip("Мінімальна швидкість часу / Minimum time speed")]
+        [Range(0f, 1f)]
+        public float minTimeSpeed;
+        
+        [Tooltip("Максимальна швидкість часу / Maximum time speed")]
+        [Range(1f, 10f)]
+        public float maxTimeSpeed = 5f;
+        
+        [Tooltip("Початкова швидкість часу / Initial time speed")]
+        [Range(0f, 10f)]
+        public float initialTimeSpeed = 1f;
           
         // Попередня година для відстеження змін
         // Previous hour to track changes
@@ -74,6 +90,26 @@ namespace Script
         {
             Debug.Log("⏰ TimeController: Start method called - script is active!");
             Debug.Log($"⏰ TimeController: Initial hour = {hour}");
+            
+            // Ініціалізуємо швидкість часу
+            // Initialize time speed
+            Time.timeScale = initialTimeSpeed;
+            Debug.Log($"⏱️ Time.timeScale set to: {Time.timeScale}");
+            
+            // Налаштовуємо UI слайдер
+            // Setup UI slider
+            if (timeSpeedSlider != null)
+            {
+                timeSpeedSlider.minValue = minTimeSpeed;
+                timeSpeedSlider.maxValue = maxTimeSpeed;
+                timeSpeedSlider.value = initialTimeSpeed;
+                timeSpeedSlider.onValueChanged.AddListener(OnTimeSpeedChanged);
+                Debug.Log($"🎚️ Time speed slider configured: min={minTimeSpeed}, max={maxTimeSpeed}, initial={initialTimeSpeed}");
+            }
+            else
+            {
+                Debug.LogWarning("⚠️ Time speed slider is not assigned! Time speed control will not be available.");
+            }
             
             // Кешуємо всі агенти на сцені
             // Cache all agents in the scene
@@ -140,6 +176,14 @@ namespace Script
         {
             Debug.Log($"🖱️ UI Button clicked for event: {evt.name}");
             TriggerEventManually(evt, "UI button");
+        }
+        
+        /// Викликається при зміні значення слайдера швидкості часу
+        /// Called when time speed slider value changes
+        private void OnTimeSpeedChanged(float value)
+        {
+            Time.timeScale = value;
+            Debug.Log($"⏱️ Time speed changed to: {value:F2}x (Time.timeScale = {Time.timeScale})");
         }
         
         /// Ручне викликання події (через клавішу або UI кнопку)
