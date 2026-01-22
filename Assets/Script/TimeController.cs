@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Behavior;
+using UnityEngine.UI;
 
 namespace Script
 {
@@ -24,7 +25,7 @@ namespace Script
         // Interval in seconds to increment the hour
         [Tooltip("Час у секундах між автоматичним збільшенням години / Time in seconds between automatic hour increments")]
         public float hourIncrementInterval = 10f;
-
+        
         // Клас для опису події яка відбувається в певну годину
         // Class for describing an event that occurs at a specific hour
         [Serializable]
@@ -41,6 +42,9 @@ namespace Script
             
             [Tooltip("Клавіша для ручного виклику події (опціонально) / Key for manual event triggering (optional)")]
             public Key shortcutKey = Key.None;
+            
+            [Tooltip("UI кнопка для ручного виклику події (опціонально) / UI button for manual event triggering (optional)")]
+            public Button uiButton;
             
             // Внутрішній прапорець для відстеження чи подія була відправлена
             // Internal flag to track if the event has been sent
@@ -102,6 +106,49 @@ namespace Script
                     Debug.LogWarning($"⚠️ Please assign EventChannel assets to {invalidEvents} invalid event(s)!");
                 }
             }
+            
+            // Підписуємося на події UI кнопок
+            // Subscribe to UI button events
+            if (timeOfDayEvents != null)
+            {
+                foreach (var evt in timeOfDayEvents)
+                {
+                    if (evt.uiButton != null)
+                    {
+                        // Створюємо локальну копію змінної для замикання
+                        // Create local copy for closure
+                        var eventCopy = evt;
+                        evt.uiButton.onClick.AddListener(() => OnUIButtonClicked(eventCopy));
+                        Debug.Log($"🖱️ UI Button registered for event: {evt.name}");
+                    }
+                }
+            }
+        }
+        
+        /// Викликається при натисканні на UI кнопку події
+        /// Called when an event's UI button is clicked
+        private void OnUIButtonClicked(TimeOfDayEvent evt)
+        {
+            Debug.Log($"🖱️ UI Button clicked for event: {evt.name}");
+            
+            // Перевірка чи призначений EventChannel
+            // Check if EventChannel is assigned
+            if (evt.eventChannel == null)
+            {
+                Debug.LogError($"❌ Cannot trigger event '{evt.name}' via UI button: EventChannel is NOT assigned!");
+                return;
+            }
+            
+            // Встановлюємо годину та викликаємо подію
+            // Set hour and trigger event
+            hour = evt.triggerHour;
+            _hourTimer = 0f; // Скидаємо таймер / Reset timer
+            ResetEventFlags(); // Скидаємо прапорці подій / Reset event flags
+            evt.hasBeenTriggered = false; // Дозволяємо відправити подію / Allow event to be sent
+            TriggerEventByName(evt.name, evt.eventChannel); // Відразу викликаємо подію / Trigger event immediately
+            evt.hasBeenTriggered = true; // Позначаємо що подію відправлено / Mark event as sent
+            _previousHour = hour; // Оновлюємо попередню годину щоб уникнути повторного виклику / Update previous hour to avoid duplicate trigger
+            Debug.Log($"✅ Hour set to: {hour} ({evt.name}) - Event triggered via UI button");
         }
         
         /// Викликається кожен кадр
