@@ -71,6 +71,16 @@ namespace Script
         [Tooltip("Початкова швидкість часу / Initial time speed")]
         [Range(0f, 10f)]
         public float initialTimeSpeed = 1f;
+        
+        [Header("Налаштування сонця / Sun Settings")]
+        [Tooltip("Transform об'єкта сонця для обертання / Sun transform for rotation")]
+        public Transform sunTransform;
+        
+        [Tooltip("Вісь обертання сонця / Sun rotation axis")]
+        public Vector3 sunRotationAxis = Vector3.right;
+        
+        [Tooltip("Початковий кут обертання сонця / Initial sun rotation angle")]
+        public float sunInitialRotation;
           
         // Попередня година для відстеження змін
         // Previous hour to track changes
@@ -217,6 +227,11 @@ namespace Script
             // Автоматичне збільшення години кожні N секунд
             // Automatic hour increment every N seconds
             _hourTimer += Time.deltaTime;
+            
+            // Оновлюємо позицію сонця
+            // Update sun position
+            UpdateSunRotation();
+            
             if (_hourTimer >= hourIncrementInterval)
             {
                 _hourTimer = 0f;
@@ -331,6 +346,28 @@ namespace Script
             // Встановлюємо поточну активну подію
             // Set current active event
             _currentActiveEvent = eventName;
+        }
+        
+        /// Оновлює обертання сонця залежно від поточного часу
+        /// Updates sun rotation based on current time
+        private void UpdateSunRotation()
+        {
+            if (sunTransform == null)
+            {
+                return;
+            }
+
+            // Обчислюємо прогрес дня (0.0 до 1.0)
+            // Calculate day progress (0.0 to 1.0)
+            float dayProgress = (hour + _hourTimer / hourIncrementInterval) / 24.0f;
+            
+            // Обчислюємо кут обертання (0-360 градусів)
+            // Calculate rotation angle (0-360 degrees)
+            float rotationAngle = dayProgress * 360f + sunInitialRotation;
+            
+            // Застосовуємо обертання навколо заданої осі
+            // Apply rotation around specified axis
+            sunTransform.rotation = Quaternion.Euler(sunRotationAxis * rotationAngle);
         }
     }
 }
