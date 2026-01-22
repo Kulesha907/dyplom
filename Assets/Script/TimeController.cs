@@ -64,12 +64,21 @@ namespace Script
         // Current active event (for tracking completion)
         private string _currentActiveEvent;
         
+        // Кешовані агенти на сцені (для оптимізації)
+        // Cached agents in the scene (for optimization)
+        private BehaviorGraphAgent[] _cachedAgents;
+        
         /// Викликається при ініціалізації об'єкта
         /// Called when the object is initialized
         void Start()
         {
             Debug.Log("⏰ TimeController: Start method called - script is active!");
             Debug.Log($"⏰ TimeController: Initial hour = {hour}");
+            
+            // Кешуємо всі агенти на сцені
+            // Cache all agents in the scene
+            _cachedAgents = FindObjectsByType<BehaviorGraphAgent>(FindObjectsSortMode.None);
+            Debug.Log($"🔄 Cached {_cachedAgents.Length} BehaviorGraphAgent(s) in the scene");
             
             // Валідація налаштувань подій
             // Validate event settings
@@ -130,12 +139,18 @@ namespace Script
         private void OnUIButtonClicked(TimeOfDayEvent evt)
         {
             Debug.Log($"🖱️ UI Button clicked for event: {evt.name}");
-            
+            TriggerEventManually(evt, "UI button");
+        }
+        
+        /// Ручне викликання події (через клавішу або UI кнопку)
+        /// Manually trigger an event (via keyboard shortcut or UI button)
+        private void TriggerEventManually(TimeOfDayEvent evt, string source)
+        {
             // Перевірка чи призначений EventChannel
             // Check if EventChannel is assigned
             if (evt.eventChannel == null)
             {
-                Debug.LogError($"❌ Cannot trigger event '{evt.name}' via UI button: EventChannel is NOT assigned!");
+                Debug.LogError($"❌ Cannot trigger event '{evt.name}' via {source}: EventChannel is NOT assigned!");
                 return;
             }
             
@@ -148,7 +163,7 @@ namespace Script
             TriggerEventByName(evt.name, evt.eventChannel); // Відразу викликаємо подію / Trigger event immediately
             evt.hasBeenTriggered = true; // Позначаємо що подію відправлено / Mark event as sent
             _previousHour = hour; // Оновлюємо попередню годину щоб уникнути повторного виклику / Update previous hour to avoid duplicate trigger
-            Debug.Log($"✅ Hour set to: {hour} ({evt.name}) - Event triggered via UI button");
+            Debug.Log($"✅ Hour set to: {hour} ({evt.name}) - Event triggered via {source}");
         }
         
         /// Викликається кожен кадр
@@ -179,23 +194,7 @@ namespace Script
                     if (evt.shortcutKey != Key.None && Keyboard.current[evt.shortcutKey].wasPressedThisFrame)
                     {
                         Debug.Log($"⌨️ {evt.shortcutKey} key pressed - setting time to {evt.name}!");
-                        
-                        // Перевірка чи призначений EventChannel
-                        // Check if EventChannel is assigned
-                        if (evt.eventChannel == null)
-                        {
-                            Debug.LogError($"❌ Cannot trigger event '{evt.name}' via key {evt.shortcutKey}: EventChannel is NOT assigned!");
-                            return;
-                        }
-                        
-                        hour = evt.triggerHour;
-                        _hourTimer = 0f; // Скидаємо таймер / Reset timer
-                        ResetEventFlags(); // Скидаємо прапорці подій / Reset event flags
-                        evt.hasBeenTriggered = false; // Дозволяємо відправити подію / Allow event to be sent
-                        TriggerEventByName(evt.name, evt.eventChannel); // Відразу викликаємо подію / Trigger event immediately
-                        evt.hasBeenTriggered = true; // Позначаємо що подію відправлено / Mark event as sent
-                        _previousHour = hour; // Оновлюємо попередню годину щоб уникнути повторного виклику / Update previous hour to avoid duplicate trigger
-                        Debug.Log($"✅ Hour set to: {hour} ({evt.name}) - Event triggered");
+                        TriggerEventManually(evt, $"key {evt.shortcutKey}");
                         return; // Виходимо з Update щоб уникнути додаткових перевірок / Exit Update to avoid additional checks
                     }
                 }
@@ -211,20 +210,20 @@ namespace Script
                 // Скидаємо прапорці для нової години
                 // Reset flags for the new hour
                 ResetEventFlags();
-            }
-
-            // Перевірка та виклик подій залежно від години
-            // Check and trigger events based on the hour
-            if (timeOfDayEvents != null)
-            {
-                foreach (var evt in timeOfDayEvents)
+                
+                // Перевірка та виклик подій залежно від години
+                // Check and trigger events based on the hour
+                if (timeOfDayEvents != null)
                 {
-                    // Перевіряємо чи настав час для цієї події і чи вона ще не була викликана
-                    // Check if it's time for this event and if it hasn't been triggered yet
-                    if (hour == evt.triggerHour && !evt.hasBeenTriggered)
+                    foreach (var evt in timeOfDayEvents)
                     {
-                        evt.hasBeenTriggered = true;
-                        TriggerEventByName(evt.name, evt.eventChannel);
+                        // Перевіряємо чи настав час для цієї події і чи вона ще не була викликана
+                        // Check if it's time for this event and if it hasn't been triggered yet
+                        if (hour == evt.triggerHour && !evt.hasBeenTriggered)
+                        {
+                            evt.hasBeenTriggered = true;
+                            TriggerEventByName(evt.name, evt.eventChannel);
+                        }
                     }
                 }
             }
@@ -265,10 +264,9 @@ namespace Script
                 
                 // КРИТИЧНО: Перезапускаємо ВСІ агенти на сцені щоб зупинити попередню поведінку
                 // CRITICAL: Restart ALL agents in the scene to stop previous behavior
-                var allAgents = FindObjectsByType<BehaviorGraphAgent>(FindObjectsSortMode.None);
-                Debug.Log($"🔄 Restarting {allAgents.Length} BehaviorGraphAgent(s) to stop previous behavior");
+                Debug.Log($"🔄 Restarting {_cachedAgents.Length} BehaviorGraphAgent(s) to stop previous behavior");
                 
-                foreach (var agent in allAgents)
+                foreach (var agent in _cachedAgents)
                 {
                     if (agent != null && agent.enabled)
                     {
