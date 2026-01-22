@@ -81,6 +81,10 @@ namespace Script
         
         [Tooltip("Початковий кут обертання сонця / Initial sun rotation angle")]
         public float sunInitialRotation;
+        
+        [Header("Налаштування відображення часу / Time Display Settings")]
+        [Tooltip("UI текстове поле для відображення часу / UI text field to display time")]
+        public TMPro.TextMeshProUGUI timeDisplayText;
           
         // Попередня година для відстеження змін
         // Previous hour to track changes
@@ -232,6 +236,10 @@ namespace Script
             // Update sun position
             UpdateSunRotation();
             
+            // Оновлюємо відображення часу
+            // Update time display
+            UpdateTimeDisplay();
+            
             if (_hourTimer >= hourIncrementInterval)
             {
                 _hourTimer = 0f;
@@ -368,6 +376,24 @@ namespace Script
             // Застосовуємо обертання навколо заданої осі
             // Apply rotation around specified axis
             sunTransform.rotation = Quaternion.Euler(sunRotationAxis * rotationAngle);
+        }
+        
+        /// Оновлює UI відображення поточного часу
+        /// Updates UI display of current time
+        private void UpdateTimeDisplay()
+        {
+            if (timeDisplayText == null)
+            {
+                return;
+            }
+            
+            // Обчислюємо хвилини з таймера (0-59)
+            // Calculate minutes from timer (0-59)
+            int minutes = Mathf.FloorToInt((_hourTimer / hourIncrementInterval) * 60f);
+            
+            // Форматуємо час у форматі "HH:MM"
+            // Format time as "HH:MM"
+            timeDisplayText.text = $"{hour:D2}:{minutes:D2}";
         }
     }
 }
