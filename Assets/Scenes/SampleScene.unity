@@ -364,7 +364,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 516359d224fb9744da83564b5178fe1a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.62
+      value: 5.39139
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 516359d224fb9744da83564b5178fe1a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -372,11 +372,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 516359d224fb9744da83564b5178fe1a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.05
+      value: 4.607533
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 516359d224fb9744da83564b5178fe1a, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.650973
+      value: 0.99932384
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 516359d224fb9744da83564b5178fe1a, type: 3}
       propertyPath: m_LocalRotation.x
@@ -384,7 +384,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 516359d224fb9744da83564b5178fe1a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.75910085
+      value: -0.036767155
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 516359d224fb9744da83564b5178fe1a, type: 3}
       propertyPath: m_LocalRotation.z
@@ -396,7 +396,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 516359d224fb9744da83564b5178fe1a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 98.77
+      value: -4.214
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 516359d224fb9744da83564b5178fe1a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -3814,6 +3814,7 @@ GameObject:
   - component: {fileID: 864777294}
   - component: {fileID: 864777293}
   - component: {fileID: 864777292}
+  - component: {fileID: 864777299}
   m_Layer: 3
   m_Name: farmer
   m_TagString: Untagged
@@ -3840,7 +3841,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: 1
+  m_BaseOffset: 3.54
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!95 &864777293
@@ -3881,7 +3882,6 @@ MonoBehaviour:
   m_BlackboardVariableOverridesList:
   - rid: 8747118959189295126
   - rid: 8747119014361432330
-  - rid: 8747119019789648020
   - rid: 8747119019789648021
   - rid: 2495113413755405224
   - rid: 2495113413755405225
@@ -3890,6 +3890,7 @@ MonoBehaviour:
   - rid: 2495113413755405228
   - rid: 2495113457304076689
   - rid: 2495113568610419095
+  - rid: 2495113587870138477
   m_OriginalGraph: {fileID: 1944558462714776877, guid: 35abf03267b0a3c4792e09a6fec416d0, type: 2}
   m_IsInitialised: 0
   m_IsStarted: 0
@@ -3943,7 +3944,7 @@ MonoBehaviour:
           m_Value0: 12692754549893828472
           m_Value1: 12680057912078205875
         Name: IdleAnimation
-        m_Value: {fileID: 7400000, guid: dffed5ca4a5870a47b4ddb1d90759964, type: 2}
+        m_Value: {fileID: 7400000, guid: 8e0c2891b473d5d409bc60ba90d0f6b4, type: 2}
     - rid: 2495113568610419095
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -3952,6 +3953,14 @@ MonoBehaviour:
           m_Value1: 12768403890636496343
         Name: cat
         m_Value: {fileID: 411077188}
+    - rid: 2495113587870138477
+      type: {class: 'BlackboardVariable`1[[UnityEngine.AnimationClip, UnityEngine.AnimationModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 8216473166099143018
+          m_Value1: 12061146496516342594
+        Name: WalkingAnimation
+        m_Value: {fileID: 7400000, guid: 0b24bdb1fbf37304083153339d2108ce, type: 2}
     - rid: 8747118959189295126
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -3968,14 +3977,6 @@ MonoBehaviour:
           m_Value1: 1727654704796810011
         Name: cowshed
         m_Value: {fileID: 697990925}
-    - rid: 8747119019789648020
-      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 10003182715666943611
-          m_Value1: 3479748600304778770
-        Name: storehouse
-        m_Value: {fileID: 0}
     - rid: 8747119019789648021
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -4080,6 +4081,21 @@ Transform:
   - {fileID: 1370691018}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &864777299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864777291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a4b332deb254948bd6061b5a9bfac53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Script.NPCAnimationController
+  showDebugLogs: 1
+  walkSpeedThreshold: 0.1
+  animationSpeedMultiplier: 1.01
 --- !u!1 &901485291
 GameObject:
   m_ObjectHideFlags: 0
@@ -5585,7 +5601,7 @@ Transform:
   m_GameObject: {fileID: 1165794804}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 28.7, y: 3.42531, z: -5.98047}
+  m_LocalPosition: {x: -3.46, y: 3.42531, z: -5.98047}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8038,7 +8054,6 @@ MonoBehaviour:
   - rid: 2495113314607562906
   - rid: 2495113412216619561
   - rid: 2495113381413388442
-  - rid: 2495113412216619558
   m_OriginalGraph: {fileID: 2312695560635926662, guid: 2901d0fef47064942848619f1f10b0f6, type: 2}
   m_IsInitialised: 0
   m_IsStarted: 0
@@ -8080,14 +8095,6 @@ MonoBehaviour:
           m_Value1: 16528155285394744663
         Name: Afternoon
         m_Value: {fileID: 11400000, guid: caf01926e39c8e74695d357736db1e65, type: 2}
-    - rid: 2495113412216619558
-      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 9204152373282280143
-          m_Value1: 16248542741521072588
-        Name: cowshed_centre
-        m_Value: {fileID: 697990925}
     - rid: 2495113412216619561
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -8206,7 +8213,7 @@ Transform:
   m_GameObject: {fileID: 1900183674}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -18.22, y: 2.07, z: -10.37}
+  m_LocalPosition: {x: -18.22, y: 2.07, z: -9.45}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

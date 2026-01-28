@@ -344,6 +344,7 @@ namespace Script
                 }
             }
             
+
             // Відправляємо подію через EventChannel
             // All agents listening to this EventChannel will receive it automatically
             // Всі агенти що слухають цей EventChannel отримають подію автоматично
