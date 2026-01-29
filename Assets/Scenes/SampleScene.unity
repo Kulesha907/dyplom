@@ -3812,7 +3812,6 @@ GameObject:
   - component: {fileID: 864777296}
   - component: {fileID: 864777295}
   - component: {fileID: 864777294}
-  - component: {fileID: 864777293}
   - component: {fileID: 864777292}
   m_Layer: 3
   m_Name: farmer
@@ -3843,28 +3842,6 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!95 &864777293
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 864777291}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1264fa7af6d3d7749b7eff4d7055e3a7, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &864777294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3881,7 +3858,6 @@ MonoBehaviour:
   m_BlackboardVariableOverridesList:
   - rid: 8747118959189295126
   - rid: 8747119014361432330
-  - rid: 8747119019789648020
   - rid: 8747119019789648021
   - rid: 2495113413755405224
   - rid: 2495113413755405225
@@ -3968,14 +3944,6 @@ MonoBehaviour:
           m_Value1: 1727654704796810011
         Name: cowshed
         m_Value: {fileID: 697990925}
-    - rid: 8747119019789648020
-      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 10003182715666943611
-          m_Value1: 3479748600304778770
-        Name: storehouse
-        m_Value: {fileID: 0}
     - rid: 8747119019789648021
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -5596,6 +5564,33 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f690e41002c1511468f3a44a02d5c89e, type: 3}
   m_PrefabInstance: {fileID: 697287370}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1173389530 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0c08e8e2286c0364c9b69112799ece7d, type: 3}
+  m_PrefabInstance: {fileID: 1936070341}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1173389531
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1173389530}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3b8902f68d5d25a46a9c44b0d0bccafb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1183294719
 GameObject:
   m_ObjectHideFlags: 0
@@ -8308,7 +8303,10 @@ PrefabInstance:
     - {fileID: 65702495048144492, guid: 0c08e8e2286c0364c9b69112799ece7d, type: 3}
     - {fileID: -8700617353114198275, guid: 0c08e8e2286c0364c9b69112799ece7d, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0c08e8e2286c0364c9b69112799ece7d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1173389531}
   m_SourcePrefab: {fileID: 100100000, guid: 0c08e8e2286c0364c9b69112799ece7d, type: 3}
 --- !u!1001 &1963940212
 PrefabInstance:
