@@ -14,15 +14,12 @@ namespace Script
         [SerializeReference] public BlackboardVariable<GameObject> trigger;
         [SerializeReference] public BlackboardVariable<GameObject> @object;
         
-        // Відстань, на якій тригер вважається "прибувшим"
-        // Distance at which the trigger is considered "arrived"
         [SerializeField] 
-        [Tooltip("Мінімальна відстань між тригером і об'єктом для завершення очікування / Minimum distance between trigger and object to complete waiting")]
+        [Tooltip("Minimum distance between trigger and object to complete waiting")]
         public float arrivalDistance = 5.0f;
 
         protected override Status OnStart()
         {
-            
             if (agent?.Value == null)
             {
                 Debug.LogError("WaitForAction: Agent is not assigned!");
@@ -47,7 +44,6 @@ namespace Script
 
         protected override Status OnUpdate()
         {
-          
             if (agent?.Value == null || trigger?.Value == null || @object?.Value == null)
             {
                 Debug.LogWarning("WaitForAction: Agent, Trigger or Object became null during execution");
@@ -56,7 +52,6 @@ namespace Script
 
             float distance = Vector3.Distance(trigger.Value.transform.position, @object.Value.transform.position);
             
-           
             if (distance <= arrivalDistance)
             {
                 Debug.Log($"{trigger.Value.name} arrived at {@object.Value.name} (distance: {distance:F2})");
@@ -68,7 +63,6 @@ namespace Script
 
         protected override void OnEnd()
         {
-            
         }
     }
 }

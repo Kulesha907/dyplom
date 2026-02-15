@@ -772,7 +772,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 74bccd55370b08b43ab00bd36da8077c, type: 2}
+  - {fileID: 2100000, guid: 2452de4151e4dd54d8a834ec0dce0ac2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -812,8 +812,8 @@ Transform:
   m_GameObject: {fileID: 248625653}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.25, y: 1, z: 0.5}
-  m_LocalScale: {x: 37.04254, y: 1, z: 37.057503}
+  m_LocalPosition: {x: -34.7, y: 1, z: 24.3}
+  m_LocalScale: {x: 88.95348, y: 1, z: 83.53324}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -900,7 +900,7 @@ MonoBehaviour:
           m_Value0: 1215959178742431304
           m_Value1: 12192089052142642228
         Name: chickencoop
-        m_Value: {fileID: 1795075132}
+        m_Value: {fileID: 1911007221}
 --- !u!195 &270714717
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1509,8 +1509,8 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.06241628, y: -0.34623414, z: 0.025131552, w: 0.9357321}
-  m_LocalPosition: {x: 5.62, y: 6.7, z: -13.51}
-  m_LocalScale: {x: 0.41003296, y: 0.99116, z: 0.99116}
+  m_LocalPosition: {x: 3.2, y: 5.6, z: -12.4}
+  m_LocalScale: {x: 0.41003296, y: 0.41620672, z: 0.99116}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -5172,7 +5172,7 @@ MonoBehaviour:
           m_Value0: 1215959178742431304
           m_Value1: 12192089052142642228
         Name: chickencoop
-        m_Value: {fileID: 1795075132}
+        m_Value: {fileID: 1911007221}
 --- !u!195 &960681271
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -5283,7 +5283,7 @@ Transform:
   m_GameObject: {fileID: 960681269}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -17.98, y: 2.427, z: 10.719}
+  m_LocalPosition: {x: -17.98, y: 2.45, z: 10.719}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5658,7 +5658,7 @@ MonoBehaviour:
           m_Value0: 1215959178742431304
           m_Value1: 12192089052142642228
         Name: chickencoop
-        m_Value: {fileID: 1795075132}
+        m_Value: {fileID: 1911007221}
 --- !u!195 &1118137876
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -6051,7 +6051,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 76367c289e71db34e9154f9bf6a42c2d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.49
+      value: 0.39
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 76367c289e71db34e9154f9bf6a42c2d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -6431,7 +6431,7 @@ MonoBehaviour:
           m_Value0: 1215959178742431304
           m_Value1: 12192089052142642228
         Name: chickencoop
-        m_Value: {fileID: 1795075132}
+        m_Value: {fileID: 1911007221}
 --- !u!195 &1274070393
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -6728,7 +6728,7 @@ MonoBehaviour:
           m_Value0: 1215959178742431304
           m_Value1: 12192089052142642228
         Name: chickencoop
-        m_Value: {fileID: 1795075132}
+        m_Value: {fileID: 1911007221}
 --- !u!195 &1335840625
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -8302,7 +8302,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: f9df182b739e53d41a8d3a7854ba1a29, type: 2}
     - target: {fileID: 919132149155446097, guid: 76367c289e71db34e9154f9bf6a42c2d, type: 3}
       propertyPath: m_Name
-      value: huaranhuay Pro 10m low
+      value: tree
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8693,6 +8693,11 @@ Transform:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 516359d224fb9744da83564b5178fe1a, type: 3}
   m_PrefabInstance: {fileID: 170771482}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1911007221 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 529fc77796c584743bbfa35e06415ef6, type: 3}
+  m_PrefabInstance: {fileID: 942555970}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1929553247
 GameObject:
