@@ -4,26 +4,31 @@ namespace Script
 {
     public class BillboardCanvas : MonoBehaviour
     {
-        private Camera _mainCamera;
-
-        void Start()
-        {
-            _mainCamera = Camera.main;
-            
-            if (_mainCamera == null)
-            {
-                Debug.LogError("BillboardCanvas: Main camera not found!");
-            }
-        }
-
         void LateUpdate()
         {
-            if (_mainCamera == null)
+            Camera activeCamera = GetActiveCamera();
+            
+            if (activeCamera == null)
             {
                 return;
             }
 
-            transform.LookAt(transform.position + _mainCamera.transform.forward);
+            transform.LookAt(transform.position + activeCamera.transform.forward);
+        }
+        
+        private Camera GetActiveCamera()
+        {
+            Camera[] allCameras = Camera.allCameras;
+            
+            foreach (Camera cam in allCameras)
+            {
+                if (cam.enabled && cam.gameObject.activeInHierarchy)
+                {
+                    return cam;
+                }
+            }
+            
+            return Camera.main;
         }
     }
 }
