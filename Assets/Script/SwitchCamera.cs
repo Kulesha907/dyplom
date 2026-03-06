@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class SwitchCamera : MonoBehaviour
 {
@@ -7,16 +8,21 @@ public class SwitchCamera : MonoBehaviour
     
     private void Start()
     {
-        camera1.gameObject.SetActive(true);
-        camera1.gameObject.SetActive(false);
+        if (camera1 != null)
+            camera1.gameObject.SetActive(true);
+        if (camera2 != null)
+            camera2.gameObject.SetActive(false);
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Keyboard.current != null && Keyboard.current.cKey.wasPressedThisFrame)
         {
-            camera1.gameObject.SetActive(!camera1.gameObject.activeSelf);
-            camera2.gameObject.SetActive(!camera2.gameObject.activeSelf);
+            if (camera1 != null && camera2 != null)
+            {
+                camera1.gameObject.SetActive(!camera1.gameObject.activeSelf);
+                camera2.gameObject.SetActive(!camera2.gameObject.activeSelf);
+            }
         }
     }
 }

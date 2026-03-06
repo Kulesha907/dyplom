@@ -224,7 +224,7 @@ Transform:
   m_GameObject: {fileID: 1679305}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 29.5, y: 1, z: -50.4}
+  m_LocalPosition: {x: 29.01, y: 1, z: -50.4}
   m_LocalScale: {x: 47.21562, y: 1, z: 62.97404}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -530,7 +530,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!20 &110006873
 Camera:
   m_ObjectHideFlags: 0
@@ -605,7 +605,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -642,13 +642,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 110006872}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.034029763, y: 0.77176136, z: -0.048134483, w: 0.63317406}
-  m_LocalPosition: {x: -28.51, y: 5, z: 4.45}
+  m_LocalRotation: {x: 0.034516506, y: 0.7652956, z: -0.047786597, w: 0.640974}
+  m_LocalPosition: {x: -27.32, y: 4.02, z: 4.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 6.742, y: 101.239, z: -0.486}
+  m_LocalEulerAnglesHint: {x: 6.742, y: 100.076, z: -0.486}
 --- !u!1001 &156156749
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10589,7 +10589,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2095972429}
-  - component: {fileID: 2095972428}
   - component: {fileID: 2095972430}
   m_Layer: 0
   m_Name: CameraManager
@@ -10598,21 +10597,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2095972428
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2095972427}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f52d1e5345c395641b482217c8804ff9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.CameraSwitcher
-  m_Cameras:
-  - {fileID: 330585545}
-  - {fileID: 110006873}
 --- !u!4 &2095972429
 Transform:
   m_ObjectHideFlags: 0
@@ -10635,7 +10619,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2095972427}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5518398b9e5524c4b87d3b068d8f0d4c, type: 3}
   m_Name: 
