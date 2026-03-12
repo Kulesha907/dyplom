@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Unity.Behavior;
 using UnityEngine;
 using Action = Unity.Behavior.Action;
@@ -39,7 +40,7 @@ namespace Script
             return Status.Failure;
         }
 
-        _textComponent = _canvas.GetComponentInChildren<TextMeshProUGUI>();
+        _textComponent = _canvas.GetComponentsInChildren<TextMeshProUGUI>().Last();
         
         if (_textComponent == null)
         {
@@ -49,16 +50,12 @@ namespace Script
 
         _previousText = _textComponent.text;
         
-        if (!string.IsNullOrEmpty(_previousText))
-        {
-            _textComponent.text = _previousText + "\n" + Sentence.Value;
-        }
-        else
+        
         {
             _textComponent.text = Sentence.Value;
         }
         
-        _canvas.gameObject.SetActive(true);
+       
         _timer = 0f;
         
         Debug.Log($"{Agent.Value.name} says: \"{Sentence.Value}\"");
@@ -68,43 +65,12 @@ namespace Script
 
     protected override Status OnUpdate()
     {
-        if (Agent.Value == null || _canvas == null || _textComponent == null)
-        {
-            return Status.Failure;
-        }
-
-        _timer += Time.deltaTime;
-        
-        if (_timer >= displayDuration)
-        {
-            Debug.Log($"{Agent.Value.name} finished talking after {_timer:F2} seconds");
-            
-            _textComponent.text = _previousText;
-            
-            if (string.IsNullOrEmpty(_previousText))
-            {
-                _canvas.gameObject.SetActive(false);
-            }
-            
-            return Status.Success;
-        }
-        
-        return Status.Running;
+        return Status.Success;
     }
 
     protected override void OnEnd()
     {
-        if (_textComponent != null)
-        {
-            _textComponent.text = _previousText;
-        }
-        
-        if (_canvas != null && string.IsNullOrEmpty(_previousText))
-        {
-            _canvas.gameObject.SetActive(false);
-        }
-        
-        _timer = 0f;
+      
     }
 }
 }
