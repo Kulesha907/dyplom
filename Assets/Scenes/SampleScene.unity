@@ -5685,98 +5685,6 @@ Transform:
   - {fileID: 182047386}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &851632400
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 851632401}
-  - component: {fileID: 851632404}
-  - component: {fileID: 851632403}
-  - component: {fileID: 851632402}
-  m_Layer: 5
-  m_Name: Panel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &851632401
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 851632400}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1295982078}
-  m_Father: {fileID: 2068677050}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 476.39606, y: 327.3395}
-  m_SizeDelta: {x: -952.7921, y: -654.6789}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &851632402
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 851632400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0450ed65ac3453fa21f77b6ba3ebb55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Script.TimeSpeedDisplay
-  timeSpeedSlider: {fileID: 1295982079}
-  speedText: {fileID: 2107811178}
-  displayFormat: 0.0x
---- !u!114 &851632403
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 851632400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.6509434, g: 0.6417319, b: 0.6417319, a: 0.392}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &851632404
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 851632400}
-  m_CullTransparentMesh: 1
 --- !u!1 &852366132
 GameObject:
   m_ObjectHideFlags: 0
@@ -8672,12 +8580,12 @@ RectTransform:
   - {fileID: 1385387192}
   - {fileID: 180266503}
   - {fileID: 2107811177}
-  m_Father: {fileID: 851632401}
+  m_Father: {fileID: 2068677050}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -30, y: 0}
-  m_SizeDelta: {x: 220.4771, y: 24.4765}
+  m_AnchoredPosition: {x: 426.3524, y: 339.41492}
+  m_SizeDelta: {x: 217.7062, y: 24.4765}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1295982079
 MonoBehaviour:
@@ -12064,7 +11972,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
+  m_ScaleFactor: 1.5
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
@@ -12113,7 +12021,7 @@ RectTransform:
   - {fileID: 1985295363}
   - {fileID: 40532703}
   - {fileID: 720180419}
-  - {fileID: 851632401}
+  - {fileID: 1295982078}
   - {fileID: 636813509}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 17.948, y: 0, z: 0}
